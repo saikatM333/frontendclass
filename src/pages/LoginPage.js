@@ -1,7 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import axios from 'axios'; // Import axios
 import AuthContext from '../context/AuthContext';
+import api from '../api.js';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -12,8 +14,29 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(email, password, role);
-    navigate('/'); // Use navigate instead of history.push
+
+    try {
+      console.log("entry")
+      // Send a POST request to the /login route
+      const response = await api.post('/api/auth/login', {
+        email,
+        password,
+        role,
+      });
+      console.log("midd")
+      // Handle successful login
+      if (response.status == 200) {
+        const { name, token } = response.data;
+        console.log(response.data)
+       login(name, token); // Assuming login updates context with user and token
+        navigate('/principal'); // Redirect to the homepage or dashboard
+      } else {
+        // Handle login errors
+        console.error('Login failed');
+      }
+    } catch (error) {
+      console.error('Error during login:', error.response ? error.response.data : error.message);
+    }
   };
 
   return (

@@ -8,13 +8,16 @@ const StudentDashboard = () => {
 
   useEffect(() => {
     const fetchStudents = async () => {
-      const response = await api.get('/api/student/classmates');
-      setStudents(response.data);
+      const response = await api.get('/api/student/myclassroom');
+      setStudents(response.data.students);
+      console.log(response.data)
     };
 
     const fetchTimetable = async () => {
-      const response = await api.get('/api/student/timetable');
-      setTimetable(response.data);
+      const response = await api.get('/api/student/mytimetable');
+
+      setTimetable(response.data.schedule);
+      console.log("time" , response.data)
     };
 
     fetchStudents();
